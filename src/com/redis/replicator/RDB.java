@@ -59,21 +59,16 @@ public class RDB {
 	
 	public String rdbLoadIntegerObject(ByteBuffer file, Integer encoding_type, boolean encode) throws Exception{
 		String retVal = null;
-		byte[] bytes;
 		switch(encoding_type)
 		{
 			case REDIS_RDB_ENC_INT8:
 				retVal = new String(new byte[]{file.get()});
 				break;
 			case REDIS_RDB_ENV_INT16:
-				bytes = new byte[2];
-				for(int i =0 ; i < 2; i++) bytes[i] = file.get();
-				retVal = new String(bytes);
+				retVal = readStrFromFile(file, 2);
 				break;
 			case REDIS_RDB_ENV_INT32:
-				bytes = new byte[4];
-				for(int i = 0; i < 4; i++) bytes[i] = file.get();
-				retVal = new String(bytes);
+				retVal = readStrFromFile(file, 4);
 				break;
 			default:
 				throw new Exception("Unknown RDB integer encoding type");
@@ -86,9 +81,7 @@ public class RDB {
 	}
 	
 	public String rdbLoadTime(ByteBuffer file){
-		byte[] bytes = new byte[4];
-		for(int i = 0; i < 4; i++) bytes[i] = file.get();		
-		return new String(bytes);		
+		return readStrFromFile(file, 4);	
 	}
 	
 	public String rdbLoadLzfStringObject(ByteBuffer file){
@@ -125,10 +118,7 @@ public class RDB {
 			}
 		}
 		
-		byte[] bytes = new byte[length];
-		for(int i = 0; i < length; i++) bytes[i] = file.get();
-		
-		return new String(bytes);
+		return readStrFromFile(file, length);
 		
 	}
 	
@@ -150,9 +140,7 @@ public class RDB {
 		case 253:
 			return R_NAN;
 		default:
-			byte[] buffer = new byte[length];
-			for(int i = 0; i < length; i++) buffer[i] = file.get();
-			String str = new String(buffer);
+			String str = readStrFromFile(file, length);
 			return Double.valueOf(str);			
 		}
 	}
