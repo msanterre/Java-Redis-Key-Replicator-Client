@@ -86,16 +86,32 @@ public class RDB {
 	
 	public String rdbLoadLzfStringObject(ByteBuffer file){
 		try{
-			Integer compressed_length = (Integer)rdb_load_length(file)[1];
-			Integer length = (Integer)rdb_load_length(file)[1];
-			byte[] buffer = new byte[compressed_length];
-			byte[] output = new byte[length];
+			int i = 0;
+			byte Z_BYTE = 'Z';
+			byte V_BYTE = 'V';
+			byte COMPRESSED_TYPE_BYTE = 1;
 			
-			output = LZFDecoder.decode(buffer);
+			int compressed_length = (Integer)rdb_load_length(file)[1];
+			int length = (Integer)(rdb_load_length(file)[1]);
+			
+			byte[] buffer = new byte[compressed_length + 7];
+			byte[] output;
+			
+			buffer[i++] = Z_BYTE;
+			buffer[i++] = V_BYTE;
+			buffer[i++] = COMPRESSED_TYPE_BYTE;
+			buffer[i++] = (byte)(compressed_length >> 8);
+			buffer[i++] = (byte)(compressed_length);
+			buffer[i++] = (byte)(length >> 8);
+			buffer[i++] = (byte)(length);
+			for(; i < compressed_length + 7; i++) buffer[i] = file.get();
+						
+			output =  LZFDecoder.decode(buffer);
 			
 			return new String(output);
 			
 		}catch(Exception ex){
+			ex.printStackTrace();
 			return null;
 		}
 	}
@@ -217,6 +233,7 @@ public class RDB {
 			buf[i] = file.get();
 		}
 		return new String(buf);
-	}
+	} 
+	
 }
 
