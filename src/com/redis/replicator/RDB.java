@@ -47,9 +47,9 @@ public class RDB {
 			return new Object[]{isEncoded,buffer & 0x3F};
 		case REDIS_RDB_ENCVAL:
 			isEncoded = true;
-			return new Object[]{isEncoded,buffer & 0x3F};
+			return new Object[]{isEncoded,(buffer & 0x3F)};
 		case REDIS_RDB_14BITLEN:
-			 return new Object[]{isEncoded, ((buffer & 0x3f) << 8) | file.get()};
+			 return new Object[]{isEncoded, (((buffer & 0x3f) << 8) | (file.get())&0xFF)};
 		default:
 			int retVal = 0;
 			for(int i = 0; i < 4; i++) retVal = retVal << 8 | file.get();

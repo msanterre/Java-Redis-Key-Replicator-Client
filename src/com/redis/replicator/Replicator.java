@@ -32,7 +32,7 @@ public class Replicator {
 							InputStream in = socket.getInputStream();
 							String line = readLine(in);
 							if(line.charAt(0) == '*'){
-								int argumentCount = Integer.parseInt(line.substring(1).trim());
+								Integer.parseInt(line.substring(1).trim());
 								line = readLine(in);
 								int command_length = Integer.parseInt(line.substring(1).trim());
 								String command = readFor(in, command_length);
