@@ -11,10 +11,8 @@ public class Harness{
 		try {
 			Replicator replicator = new Replicator(InetAddress.getByName("127.0.0.1"), 6379);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

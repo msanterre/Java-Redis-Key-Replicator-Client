@@ -209,6 +209,7 @@ public class RDB {
 			throw new Exception("Can't handle RDB format version " + rdbVersion);
 		}
 		int type = 0;
+		int dbSelect = 1;
 		do{
 			type = rdbLoadType(file);
 			if(type == REDIS_EXPIRETIME){
@@ -216,7 +217,11 @@ public class RDB {
 				type =  rdbLoadType(file);				
 			}
 			if(type == REDIS_SELECTDB){
-				rdb_load_length(file);
+				if(dbSelect-- > 0){
+					rdb_load_length(file);
+				}else{
+					break;
+				}
 			}
 			if(type != REDIS_EOF && type != REDIS_SELECTDB){
 				String key = rdbLoadStringObject(file);
